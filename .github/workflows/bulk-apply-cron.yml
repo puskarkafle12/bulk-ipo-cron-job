@@ -1,0 +1,30 @@
+name: Bulk IPO Apply (cron)
+
+on:
+  schedule:
+    # Every day at 06:00 UTC (01:00 EST)
+    - cron: '0 6 * * *'
+  workflow_dispatch: {}
+
+jobs:
+  bulk-apply:
+    runs-on: ubuntu-latest
+
+    env:
+      BULK_IPO_USERS_JSON: ${{ secrets.BULK_IPO_USERS_JSON }}
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Install dependencies
+        run: npm install node-fetch@3
+
+      - name: Run bulk IPO apply
+        run: node cron/bulk-apply.js
+
